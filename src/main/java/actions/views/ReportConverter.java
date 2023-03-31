@@ -26,7 +26,7 @@ public class ReportConverter {
                 rv.getDepartment(),
                 rv.getCreatedAt(),
                 rv.getUpdatedAt(),
-                rv.getDeleteflag());
+                rv.getDeleteFlag());
 
     }
 
@@ -50,7 +50,7 @@ public class ReportConverter {
                 r.getDepertment(),
                 r.getCreatedAt(),
                 r.getUpdatedAt(),
-                r.getDeleteflag());
+                r.getDeleteFlag());
 
     }
 
@@ -80,8 +80,11 @@ public class ReportConverter {
         r.setReportDate(rv.getReportDate());
         r.setTitle(rv.getTitle());
         r.setContent(rv.getContent());
+        r.setDepertment(rv.getDepartment());
         r.setCreatedAt(rv.getCreatedAt());
         r.setUpdatedAt(rv.getUpdatedAt());
+        r.setDeleteFlag(rv.getDeleteFlag());
+
 
     }
 

@@ -53,6 +53,7 @@ public interface JpaConst {
     String JPQL_PARM_CODE = "code"; //社員番号
     String JPQL_PARM_PASSWORD = "password"; //パスワード
     String JPQL_PARM_EMPLOYEE = "employee"; //従業員
+    String JPQL_PARM_ID = "id"; //掲示板id
 
     //NamedQueryの nameとquery
     //全ての従業員をidの降順に取得する
@@ -73,11 +74,16 @@ public interface JpaConst {
     //全ての掲示板の件数を取得する
     String Q_REP_COUNT = ENTITY_REP + ".count";
     String Q_REP_COUNT_DEF = "SELECT COUNT(r) FROM Report AS r";
+
+    //掲示板のidを条件に未削除の掲示物を取得する
+    String Q_REP_GET_BY_ID = ENTITY_REP + ".getById";
+    String Q_REP_GET_BY_ID_DEF = "SELECT r FROM Report AS r WHERE r.deleteFlag = 0 AND r.id = :"+ JPQL_PARM_ID;;
+
     //指定した従業員が作成した掲示板を全件idの降順で取得する
     String Q_REP_GET_ALL_MINE = ENTITY_REP + ".getAllMine";
-    String Q_REP_GET_ALL_MINE_DEF = "SELECT r FROM Report AS r WHERE r.employee = :" + JPQL_PARM_EMPLOYEE + " ORDER BY r.id DESC";
+    String Q_REP_GET_ALL_MINE_DEF = "SELECT r FROM Report AS r WHERE r.deleteFlag = 0 ORDER BY r.id DESC";
     //指定した従業員が作成した掲示板の件数を取得する
     String Q_REP_COUNT_ALL_MINE = ENTITY_REP + ".countAllMine";
-    String Q_REP_COUNT_ALL_MINE_DEF = "SELECT COUNT(r) FROM Report AS r WHERE r.employee = :" + JPQL_PARM_EMPLOYEE;
+    String Q_REP_COUNT_ALL_MINE_DEF = "SELECT COUNT(r) FROM Report AS r WHERE r.deleteFlag = 0";
 
 }

@@ -59,8 +59,8 @@ public class ReportView {
     private LocalDateTime updatedAt;
 
     /**
-     * 削除フラグ
+     * 削除された掲示物かどうか（掲載中：0、削除済み：1）
      */
-    private Integer deleteflag;
+    private Integer deleteFlag;
 
 }

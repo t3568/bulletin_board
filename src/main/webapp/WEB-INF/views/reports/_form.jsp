@@ -21,18 +21,29 @@
 <c:out value="${sessionScope.login_employee.name}" />
 <br /><br />
 
-<label for="${AttributeConst.REP_TITLE.getValue()}">タイトル</label><br />
-<input type="text" name="${AttributeConst.REP_TITLE.getValue()}" id="${AttributeConst.REP_TITLE.getValue()}" value="${report.title}" />
-<br /><br />
+<div class="mb-3">
+  <label for="FormControlInput1" class="form-label">タイトル</label>
+  <input type="text" class="form-control" id="FormControlInput1" name="${AttributeConst.REP_TITLE.getValue()}" value="${report.title}" />
+</div>
+<div class="mb-3">
+  <label for="FormControlTextarea1" class="form-label">内容</label>
+  <textarea class="form-control" id="FormControlTextarea1" rows="3" name="${AttributeConst.REP_CONTENT.getValue()}">${report.content}</textarea>
 
-<label for="${AttributeConst.REP_CONTENT.getValue()}">内容</label><br />
-<textarea  name="${AttributeConst.REP_CONTENT.getValue()}" id="${AttributeConst.REP_CONTENT.getValue()}" rows="10" cols="50">${report.content}</textarea>
-<br /><br />
+</div>
+<div class="mb-3">
+<label for="DataList" class="form-label">掲載部署</label>
+<input class="form-control" list="datalistOptions" id="DataList" placeholder="部署名を選択" name="${AttributeConst.REP_DEPARTMENT.getValue()}" value="${report.department}" />
+<datalist id="datalistOptions">
 
-<label for="${AttributeConst.REP_DEPARTMENT.getValue()}">掲載部署</label><br />
-<textarea  name="${AttributeConst.REP_DEPARMENT.getValue()}" id="${AttributeConst.REP_DEPARTMENT.getValue()}" rows="10" cols="50">${report.content}</textarea>
-<br /><br />
-
+  <option value="総務部">
+  <option value="経理部">
+  <option value="人事部">
+  <option value="営業部">
+  <option value="情報システム部">
+</datalist>
+</div>
 <input type="hidden" name="${AttributeConst.REP_ID.getValue()}" value="${report.id}" />
 <input type="hidden" name="${AttributeConst.TOKEN.getValue()}" value="${_token}" />
+<div class="mb-3">
 <button type="submit">投稿</button>
+</div>

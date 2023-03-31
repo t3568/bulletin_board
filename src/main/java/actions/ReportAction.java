@@ -113,8 +113,8 @@ public class ReportAction extends ActionBase {
                     day,
                     getRequestParam(AttributeConst.REP_TITLE),
                     getRequestParam(AttributeConst.REP_CONTENT),
-                    null,
-                    null, null, null);
+                    getRequestParam(AttributeConst.REP_DEPARTMENT),
+                    null, null, 0);
 
             //掲示板情報登録
             List<String> errors = service.create(rv);
@@ -136,7 +136,7 @@ public class ReportAction extends ActionBase {
                 putSessionScope(AttributeConst.FLUSH, MessageConst.I_REGISTERED.getMessage());
 
                 //一覧画面にリダイレクト
-                redirect(ForwardConst.ACT_REP, ForwardConst.CMD_INDEX);
+                redirect(ForwardConst.ACT_TOP, ForwardConst.CMD_INDEX);
             }
         }
     }
@@ -152,7 +152,7 @@ public class ReportAction extends ActionBase {
         ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
 
         if (rv == null) {
-            //該当の掲示板データが存在しない場合はエラー画面を表示
+            //該当の掲示板データが存在しない、または論理削除されている場合はエラー画面を表示
             forward(ForwardConst.FW_ERR_UNKNOWN);
 
         } else {
@@ -174,24 +174,20 @@ public class ReportAction extends ActionBase {
         //idを条件に掲示板データを取得する
         ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
 
-        //セッションからログイン中の従業員情報を取得
-        EmployeeView ev = (EmployeeView) getSessionScope(AttributeConst.LOGIN_EMP);
+        if (rv == null || rv.getDeleteFlag() == AttributeConst.DEL_FLAG_TRUE.getIntegerValue()) {
 
-        if (rv == null || ev.getId() != rv.getEmployee().getId()) {
             //該当の掲示板データが存在しない、または
             //ログインしている従業員が掲示板の作成者でない場合はエラー画面を表示
             forward(ForwardConst.FW_ERR_UNKNOWN);
+            return;
 
-        } else {
-
+        }
             putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策用トークン
             putRequestScope(AttributeConst.REPORT, rv); //取得した掲示板データ
 
             //編集画面を表示
             forward(ForwardConst.FW_REP_EDIT);
         }
-
-    }
 
     /**
      * 更新を行う
@@ -210,6 +206,7 @@ public class ReportAction extends ActionBase {
             rv.setReportDate(toLocalDate(getRequestParam(AttributeConst.REP_DATE)));
             rv.setTitle(getRequestParam(AttributeConst.REP_TITLE));
             rv.setContent(getRequestParam(AttributeConst.REP_CONTENT));
+            rv.setDepartment(getRequestParam(AttributeConst.REP_DEPARTMENT));
 
             //掲示板データを更新する
             List<String> errors = service.update(rv);
@@ -233,6 +230,27 @@ public class ReportAction extends ActionBase {
                 redirect(ForwardConst.ACT_REP, ForwardConst.CMD_INDEX);
 
             }
+        }
+    }
+
+    /**
+     * 論理削除を行なう
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void destroy() throws ServletException, IOException {
+
+        //CSRF対策 tokenのチェック
+        if (checkToken()) {
+
+            //idを条件に掲示板データを論理削除する
+            service.destroy(toNumber(getRequestParam(AttributeConst.REP_ID)));
+
+            //セッションに削除完了のフラッシュメッセージを設定
+            putSessionScope(AttributeConst.FLUSH, MessageConst.I_DELETED.getMessage());
+
+            //一覧画面にリダイレクト
+            redirect(ForwardConst.ACT_REP, ForwardConst.CMD_INDEX);
         }
     }
 }

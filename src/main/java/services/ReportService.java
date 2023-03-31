@@ -3,8 +3,6 @@ package services;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import actions.views.EmployeeConverter;
-import actions.views.EmployeeView;
 import actions.views.ReportConverter;
 import actions.views.ReportView;
 import constants.JpaConst;
@@ -17,36 +15,6 @@ import models.validators.ReportValidator;
 public class ReportService extends ServiceBase {
 
     /**
-     * 指定した従業員が作成した掲示板データを、指定されたページ数の一覧画面に表示する分取得しReportViewのリストで返却する
-     * @param employee 従業員
-     * @param page ページ数
-     * @return 一覧画面に表示するデータのリスト
-     */
-    public List<ReportView> getMinePerPage(EmployeeView employee, int page) {
-
-        List<Report> reports = em.createNamedQuery(JpaConst.Q_REP_GET_ALL_MINE, Report.class)
-                .setParameter(JpaConst.JPQL_PARM_EMPLOYEE, EmployeeConverter.toModel(employee))
-                .setFirstResult(JpaConst.ROW_PER_PAGE * (page - 1))
-                .setMaxResults(JpaConst.ROW_PER_PAGE)
-                .getResultList();
-        return ReportConverter.toViewList(reports);
-    }
-
-    /**
-     * 指定した従業員が作成した掲示板データの件数を取得し、返却する
-     * @param employee
-     * @return 掲示板データの件数
-     */
-    public long countAllMine(EmployeeView employee) {
-
-        long count = (long) em.createNamedQuery(JpaConst.Q_REP_COUNT_ALL_MINE, Long.class)
-                .setParameter(JpaConst.JPQL_PARM_EMPLOYEE, EmployeeConverter.toModel(employee))
-                .getSingleResult();
-
-        return count;
-    }
-
-    /**
      * 指定されたページ数の一覧画面に表示する掲示板データを取得し、ReportViewのリストで返却する
      * @param page ページ数
      * @return 一覧画面に表示するデータのリスト
@@ -57,6 +25,7 @@ public class ReportService extends ServiceBase {
                 .setFirstResult(JpaConst.ROW_PER_PAGE * (page - 1))
                 .setMaxResults(JpaConst.ROW_PER_PAGE)
                 .getResultList();
+
         return ReportConverter.toViewList(reports);
     }
 
@@ -67,7 +36,35 @@ public class ReportService extends ServiceBase {
     public long countAll() {
         long reports_count = (long) em.createNamedQuery(JpaConst.Q_REP_COUNT, Long.class)
                 .getSingleResult();
+
         return reports_count;
+    }
+
+    /**
+     * 指定した従業員が作成した掲示板データを、指定されたページ数の一覧画面に表示する分取得しReportViewのリストで返却する
+     * @param page ページ数
+     * @return 一覧画面に表示するデータのリスト
+     */
+    public List<ReportView> getMinePerPage(int page) {
+
+        List<Report> reports = em.createNamedQuery(JpaConst.Q_REP_GET_ALL_MINE, Report.class)
+                .setFirstResult(JpaConst.ROW_PER_PAGE * (page - 1))
+                .setMaxResults(JpaConst.ROW_PER_PAGE)
+                .getResultList();
+
+        return ReportConverter.toViewList(reports);
+    }
+
+    /**
+     * 指定した従業員が作成した掲示板データの件数を取得し、返却する
+     * @return 掲示板データの件数
+     */
+    public long countAllMine() {
+
+        long count = (long) em.createNamedQuery(JpaConst.Q_REP_COUNT_ALL_MINE, Long.class)
+                .getSingleResult();
+
+        return count;
     }
 
     /**
@@ -98,7 +95,28 @@ public class ReportService extends ServiceBase {
     }
 
     /**
-     * 画面から入力された掲示板の登録内容を元に、掲示板データを更新する
+     * idを条件に掲示板データを論理削除する
+     * @param id
+     */
+
+    public void destroy(Integer id) {
+
+        //idを条件に登録済みの掲載情報を取得する
+        ReportView savedREP = findOne(id);
+
+        //更新日時に現在時刻を設定する
+        LocalDateTime today = LocalDateTime.now();
+        savedREP.setUpdatedAt(today);
+
+        //論理削除フラグをたてる
+        savedREP.setDeleteFlag(JpaConst.REP_DEL_TRUE);
+
+        //更新処理を行なう
+        update(savedREP);
+    }
+
+    /**
+     * 画面から入力された掲示板の登録内容を元に、掲示板テーブルを更新する
      * @param rv 掲示板の更新内容
      * @return バリデーションで発生したエラーのリスト
      */
@@ -132,6 +150,7 @@ public class ReportService extends ServiceBase {
     /**
      * 掲示板データを1件登録する
      * @param rv 掲示板データ
+     * @return 登録結果（成功：true 失敗:false）
      */
     private void createInternal(ReportView rv) {
 

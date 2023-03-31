@@ -38,7 +38,7 @@ import lombok.Setter;
             query = JpaConst.Q_REP_GET_ALL_MINE_DEF),
     @NamedQuery(
             name = JpaConst.Q_REP_COUNT_ALL_MINE,
-            query = JpaConst.Q_REP_COUNT_ALL_MINE_DEF)
+            query = JpaConst.Q_REP_COUNT_ALL_MINE_DEF),
 })
 
 @Getter //全てのクラスフィールドについてgetterを自動生成する(Lombok)
@@ -102,9 +102,9 @@ public class Report {
     private LocalDateTime updatedAt;
 
     /**
-     * 削除フラグ
+     * 削除された掲示物かどうか（掲載中：0、削除済み：1）
      */
     @Column(name = JpaConst.REP_COL_DELETE_FAG, nullable = false)
-    private Integer deleteflag;
+    private Integer deleteFlag;
 
 }

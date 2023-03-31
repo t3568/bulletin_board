@@ -10,7 +10,7 @@
 <c:import url="/WEB-INF/views/layout/app.jsp">
     <c:param name="content">
 
-        <h2>掲示板 詳細ページ</h2>
+        <h2>掲載情報 詳細ページ</h2>
 
         <table>
             <tbody>
@@ -22,6 +22,10 @@
                     <th>日付</th>
                     <fmt:parseDate value="${report.reportDate}" pattern="yyyy-MM-dd" var="reportDay" type="date" />
                     <td><fmt:formatDate value='${reportDay}' pattern='yyyy-MM-dd' /></td>
+                </tr>
+                <tr>
+                    <th>内容</th>
+                    <td><c:out value="${report.content}" /></td>
                 </tr>
                 <tr>
                     <th>掲載部署</th>
@@ -42,7 +46,7 @@
 
         <c:if test="${sessionScope.login_employee.id == report.employee.id}">
             <p>
-                <a href="<c:url value='?action=${actRep}&command=${commEdt}&id=${report.id}' />">この掲示板を編集する</a>
+                <a href="<c:url value='?action=${actRep}&command=${commEdt}&id=${report.id}' />">この掲載情報を編集する</a>
             </p>
         </c:if>
 

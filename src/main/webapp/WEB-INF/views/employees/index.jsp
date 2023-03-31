@@ -15,14 +15,16 @@
                 <c:out value="${flush}"></c:out>
             </div>
         </c:if>
-        <h2>従業員　一覧</h2>
-        <table id="employee_list">
-            <tbody>
+        <h2>従業員　管理一覧</h2>
+          <table class="table table-striped" id="employee_list">
+            <thead class="table-info">
                 <tr>
-                    <th>社員番号</th>
-                    <th>氏名</th>
-                    <th>操作</th>
+                  <th scope="col" class="employee_code">社員番号</th>
+                  <th scope="col" class="employee_name">氏名</th>
+                  <th scope="col" class="employee_action">操作</th>
                 </tr>
+            </thead>
+            <tbody>
                 <c:forEach var="employee" items="${employees}" varStatus="status">
                     <tr class="row${status.count % 2}">
                         <td><c:out value="${employee.code}" /></td>
@@ -41,7 +43,6 @@
                 </c:forEach>
             </tbody>
         </table>
-
         <div id="pagination">
             （全 ${employees_count} 件）<br />
             <c:forEach var="i" begin="1" end="${((employees_count - 1) / maxRow) + 1}" step="1">

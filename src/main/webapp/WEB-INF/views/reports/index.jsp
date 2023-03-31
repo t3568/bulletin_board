@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="constants.ForwardConst" %>
+<%@ page import="constants.AttributeConst" %>
 
 <c:set var="actRep" value="${ForwardConst.ACT_REP.getValue()}" />
 <c:set var="commIdx" value="${ForwardConst.CMD_INDEX.getValue()}" />
@@ -15,26 +16,39 @@
                 <c:out value="${flush}"></c:out>
             </div>
         </c:if>
-        <h2>掲示板　一覧</h2>
-        <table id="report_list">
-            <tbody>
-                <tr>
-                    <th class="report_name">氏名</th>
-                    <th class="report_date">日付</th>
-                    <th class="report_title">タイトル</th>
-                    <th class="report_action">操作</th>
-                </tr>
-                <c:forEach var="report" items="${reports}" varStatus="status">
-                    <fmt:parseDate value="${report.reportDate}" pattern="yyyy-MM-dd" var="reportDay" type="date" />
+        <h2>掲載情報　管理</h2>
+          <table class="table table-striped" id="report_list">
+          <thead class="table-info">
+            <tr>
+              <th scope="col" class="report_department">部署</th>
+              <th scope="col" class="report_date">日付</th>
+              <th scope="col" class="report_title">タイトル</th>
+              <th scope="col" class="report_content">内容</th>
+              <th scope="col" class="report_action">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+          <c:forEach var="report" items="${reports}" varStatus="status">
+              <fmt:parseDate value="${report.reportDate}" pattern="yyyy-MM-dd" var="reportDay" type="date" />
 
-                    <tr class="row${status.count % 2}">
-                        <td class="report_name"><c:out value="${report.employee.name}" /></td>
-                        <td class="report_date"><fmt:formatDate value='${reportDay}' pattern='yyyy-MM-dd' /></td>
-                        <td class="report_title">${report.title}</td>
-                        <td class="report_action"><a href="<c:url value='?action=${actRep}&command=${commShow}&id=${report.id}' />">詳細を見る</a></td>
-                    </tr>
-                </c:forEach>
-            </tbody>
+            <tr class="row${status.count % 2}">
+              <td class="report_department"><c:out value="${report.department}" /></td>
+              <td class="report_date"><fmt:formatDate value='${reportDay}' pattern='yyyy-MM-dd' /></td>
+              <td class="report_title">${report.title}</td>
+              <td class="report_content">${report.content}</td>
+              <td class="report_action">
+                  <c:choose>
+                      <c:when test="${report.deleteFlag == AttributeConst.DEL_FLAG_TRUE.getIntegerValue()}">
+                              （削除済み）
+                      </c:when>
+                      <c:otherwise>
+                          <a href="<c:url value='?action=${actRep}&command=${commShow}&id=${report.id}' />">詳細を見る</a>
+                      </c:otherwise>
+                  </c:choose>
+              </td>
+            </tr>
+          </c:forEach>
+          </tbody>
         </table>
 
         <div id="pagination">
@@ -50,7 +64,7 @@
                 </c:choose>
             </c:forEach>
         </div>
-        <p><a href="<c:url value='?action=${actRep}&command=${commNew}' />">新規掲示板の登録</a></p>
+        <p><a href="<c:url value='?action=${actRep}&command=${commNew}' />">新規情報の登録</a></p>
 
     </c:param>
 </c:import>
