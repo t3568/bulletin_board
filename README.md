@@ -1,5 +1,5 @@
 # bulletin_board
-"bulletin_board" は java で作成した簡易掲示板サイトです。
+"bulletin_board" は java で作成した簡易掲示板です。
 
 # Demo
 ![giphy](https://user-images.githubusercontent.com/125663739/229462791-266af00f-e9bd-434c-b04b-aad803904d55.gif)
